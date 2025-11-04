@@ -1,5 +1,5 @@
 package view;
-
+import model.utils.FechaUtils;
 import controller.AdopcionController;
 import controller.DuenoController;
 import controller.MascotaController;
@@ -74,11 +74,31 @@ public class AdopcionView {
         sc.nextLine();
         mascota.setRazaId(razaId);
 
-        System.out.print("Ingrese fecha de nacimiento (yyyy-mm-dd): ");
-        String fechaNacimiento = sc.nextLine();
-        if (!fechaNacimiento.isBlank()) {
-            mascota.setFechaNacimiento(java.sql.Date.valueOf(fechaNacimiento));
+
+    String fechaNacimientoStr;
+    Date fechaNacimiento;
+
+    do {
+        System.out.print("Ingrese fecha de nacimiento (" + FechaUtils.FORMATO_FECHA + "): ");
+        fechaNacimientoStr = sc.nextLine().trim();
+
+        if (FechaUtils.esFechaValida(fechaNacimientoStr, FechaUtils.FORMATO_FECHA)) {
+
+            // Verificamos que no sea una fecha futura
+            if (FechaUtils.esFechaFutura(fechaNacimientoStr, FechaUtils.FORMATO_FECHA)) {
+                System.out.println("ERROR: La fecha de nacimiento no puede ser futura. Intente de nuevo.");
+                continue;
+            }
+
+            // Convertimos la cadena a java.sql.Date y la asignamos
+            fechaNacimiento = Date.valueOf(fechaNacimientoStr);
+            mascota.setFechaNacimiento(fechaNacimiento);
+            break;
+
+        } else {
+            System.out.println("ERROR: Formato de fecha inválido. Use el formato yyyy-MM-dd.");
         }
+    } while (true);
 
         System.out.println("Seleccione sexo de la mascota:");
         System.out.println("1. Macho");

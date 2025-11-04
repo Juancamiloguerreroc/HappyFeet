@@ -4,6 +4,7 @@ import controller.VacunacionController;
 import model.entities.JornadaVacunacion;
 import model.entities.RegistroJornadaVacunacion;
 import model.enums.EstadoJornadaVacunacion;
+import model.utils.FechaUtils;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -67,13 +68,13 @@ public class VacunacionView {
         jornada.setNombre(sc.nextLine());
 
         System.out.print("Fecha (yyyy-mm-dd): ");
-        jornada.setFecha(Date.valueOf(sc.nextLine()));
+        jornada.setFecha(FechaUtils.parseFecha(sc.nextLine()));
 
         System.out.print("Hora de inicio (HH:MM): ");
-        jornada.setHoraInicio(Time.valueOf(sc.nextLine() + ":00"));
+        jornada.setHoraInicio(FechaUtils.parseHora(sc.nextLine()));
 
         System.out.print("Hora de fin (HH:MM): ");
-        jornada.setHoraFin(Time.valueOf(sc.nextLine() + ":00"));
+        jornada.setHoraFin(FechaUtils.parseHora(sc.nextLine()));
 
         System.out.print("Ubicación: ");
         jornada.setUbicacion(sc.nextLine());
@@ -106,7 +107,7 @@ public class VacunacionView {
 
         JornadaVacunacion jornada = vacunacionController.buscarJornadaPorId(id);
         if (jornada == null) {
-            System.out.println("❌ No se encontró ninguna jornada con ese ID.");
+            System.out.println("No se encontró ninguna jornada con ese ID.");
             return;
         }
 
@@ -126,7 +127,7 @@ public class VacunacionView {
 
             JornadaVacunacion jornada = vacunacionController.buscarJornadaPorId(jornadaId);
             if (jornada == null) {
-                System.out.println("❌ No se encontró la jornada.");
+                System.out.println("No se encontró la jornada.");
                 return;
             }
 
@@ -152,7 +153,7 @@ public class VacunacionView {
 
             System.out.print("Próxima dosis (yyyy-mm-dd) o vacío si no aplica: ");
             String proxDosisStr = sc.nextLine();
-            Date proximaDosis = proxDosisStr.isBlank() ? null : Date.valueOf(proxDosisStr);
+            Date proximaDosis = proxDosisStr.isBlank() ? null : FechaUtils.parseFecha(proxDosisStr);
 
             System.out.print("Observaciones: ");
             String observaciones = sc.nextLine();
@@ -163,7 +164,7 @@ public class VacunacionView {
             reg.setDuenoId(duenoId);
             reg.setVacunaId(vacunaId);
             reg.setVeterinarioId(vetId);
-            reg.setFechaHora(new java.sql.Timestamp(System.currentTimeMillis()));
+            reg.setFechaHora(FechaUtils.obtenerFechaHoraActual());
             reg.setLoteVacuna(lote);
             reg.setProximaDosis(proximaDosis);
             reg.setObservaciones(observaciones);
@@ -172,7 +173,7 @@ public class VacunacionView {
             System.out.println(resultado);
 
         } catch (SQLException e) {
-            System.out.println("❌ Error al registrar vacunación: " + e.getMessage());
+            System.out.println("Error al registrar vacunación: " + e.getMessage());
         }
     }
 
@@ -195,8 +196,8 @@ public class VacunacionView {
         sc.nextLine();
 
         EstadoJornadaVacunacion.Estado nuevoEstado = switch (opt) {
-            case 2 -> EstadoJornadaVacunacion.Estado.EN_CURSO;
-            case 3 -> EstadoJornadaVacunacion.Estado.FINALIZADA;
+            case 1 -> EstadoJornadaVacunacion.Estado.EN_CURSO;
+            case 2 -> EstadoJornadaVacunacion.Estado.FINALIZADA;
             default -> EstadoJornadaVacunacion.Estado.CANCELADA;
         };
 

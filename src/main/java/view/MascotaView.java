@@ -3,6 +3,7 @@ package view;
 import controller.MascotaController;
 import model.entities.Mascota;
 import model.enums.SexoMascota;
+import model.utils.FechaUtils;
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -11,7 +12,6 @@ public class MascotaView {
 
     private final MascotaController mascotaController;
     private final Scanner sc;
-    private static final String FECHA_FORMATO = "YYYY-MM-DD";
 
     public MascotaView() {
         this.mascotaController = new MascotaController();
@@ -86,19 +86,24 @@ public class MascotaView {
         System.out.print("Nombre de la mascota: ");
         String nombre = sc.nextLine();
 
+        String fechaNacimientoStr;
         Date fechaNacimiento;
-        
-        while (true) {
-            System.out.print("Fecha de nacimiento (" + FECHA_FORMATO + "): ");
-            String fechaStr = sc.nextLine().trim();
-            
-            try {
-                fechaNacimiento = Date.valueOf(fechaStr);
+
+        do {
+            System.out.print("Ingrese fecha de nacimiento (" + FechaUtils.FORMATO_FECHA + "): ");
+            fechaNacimientoStr = sc.nextLine().trim();
+
+            if (FechaUtils.esFechaValida(fechaNacimientoStr, FechaUtils.FORMATO_FECHA)) {
+                if (FechaUtils.esFechaFutura(fechaNacimientoStr, FechaUtils.FORMATO_FECHA)) {
+                    System.out.println("ERROR: La fecha de nacimiento no puede ser futura. Intente de nuevo.");
+                    continue;
+                }
+                fechaNacimiento = Date.valueOf(fechaNacimientoStr);
                 break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("Formato de fecha inválido. Por favor, use " + FECHA_FORMATO + ".");
+            } else {
+                System.out.println("ERROR: Formato de fecha inválido. Use el formato yyyy-MM-dd.");
             }
-        }
+        } while (true);
 
         SexoMascota sexoEnum = leerSexoMascota();
 

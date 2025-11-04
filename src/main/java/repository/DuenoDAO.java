@@ -147,4 +147,25 @@ public class DuenoDAO {
         }
         return null;
     }
+    
+    public Dueno obtenerPorId(int id) throws SQLException {
+            Dueno dueno = null;
+            String sql = "SELECT * FROM duenos WHERE id = ?";
+
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                ps.setInt(1, id);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        dueno = mapearDueno(rs);
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener dueño por ID DAO: " + e.getMessage());
+                throw e;
+            }
+            return dueno;
+        }
 }

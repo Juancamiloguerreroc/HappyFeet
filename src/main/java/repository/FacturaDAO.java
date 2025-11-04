@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacturaDAO {
+    
     public void crear(Factura factura) throws SQLException{
         String sql = "INSERT INTO facturas (dueno_id, numero_factura, fecha_emision,subtotal, impuesto, descuento, total, metodo_pago, estado, observaciones) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        
+        // Usar try-with-resources para Connection y PreparedStatement
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)){
             
@@ -29,17 +32,27 @@ public class FacturaDAO {
             
             ps.executeUpdate();
             
-            System.out.println("Factura agregada con exito");
+            // Quité el System.out.println de aquí. El DAO no debe imprimir a consola.
+            // La vista (o el controlador) es quien debe reportar el éxito.
+            
         } catch (SQLException e) {
+            // Es mejor lanzar la excepción para que el controlador la maneje.
             System.out.println("Error al agregar factura: "+ e.getMessage());
+            throw e; // Relanzar la excepción
         }
     }
-    public List<Factura> ListarDuenos(){
+    
+    // --- CORRECCIÓN ---
+    // El método se llamaba ListarDuenos pero devolvía Facturas.
+    // Lo renombré a listarFacturas.
+    public List<Factura> listarFacturas() throws SQLException {
         List<Factura> facturas = new ArrayList<>();
         String sql = "SELECT * FROM facturas";
+        
+        // Usar try-with-resources
         try (Connection conn = DatabaseConnection.getConnection();
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql)){
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)){
             
             while(rs.next()){
                 Factura f = new Factura();
@@ -57,7 +70,10 @@ public class FacturaDAO {
                 facturas.add(f);
             }
         } catch (SQLException e) {
-            System.out.println("Error al listar los dueños: "+e.getMessage());
+            // --- CORRECCIÓN ---
+            // Mensaje de error actualizado
+            System.out.println("Error al listar las facturas: "+e.getMessage());
+            throw e; // Relanzar
         }
         return facturas;
     }

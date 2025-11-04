@@ -1,12 +1,14 @@
 package Main;
 
 import view.*;
+import controller.FacturaController; 
+import repository.DuenoDAO;
+import repository.FacturaDAO;
 import java.util.Scanner;
 
 public class Main {
 
     private final Scanner scanner = new Scanner(System.in);
-
     private final CitaView citaView = new CitaView();
     private final MascotaView mascotaView = new MascotaView();
     private final VeterinarioView veterinarioView = new VeterinarioView();
@@ -18,6 +20,13 @@ public class Main {
     private final VacunacionView jornadaView = new VacunacionView();
     private final ClubMascotasView clubView = new ClubMascotasView();
     private final FacturaView facturaView = new FacturaView();
+    private final DuenoDAO duenoDAO = new DuenoDAO();
+    private final FacturaDAO facturaDAO = new FacturaDAO();
+    private final FacturaController facturaController;
+
+    public Main() {
+        this.facturaController = new FacturaController(facturaView, facturaDAO, duenoDAO);
+    }
 
     public void iniciar() {
         int opcion;
@@ -50,8 +59,8 @@ public class Main {
                 case 7 -> inventarioView.mostrarMenu();
                 case 8 -> adopcionView.mostrarMenu();
                 case 9 -> jornadaView.mostrarMenu();
-/*                 case 10 -> clubView.mostrarMenu();
-                case 11 -> facturaView.mostrarMenu();*/
+                case 10 -> clubView.mostrarMenu();
+                case 11 -> facturaController.gestionarMenuFacturas();
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opción no válida.");
             }

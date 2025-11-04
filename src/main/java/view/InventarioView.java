@@ -3,8 +3,8 @@ package view;
 import controller.InventarioController;
 import model.entities.Inventario;
 import model.entities.MovimientoInventario;
+import model.utils.FechaUtils;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -54,7 +54,7 @@ public class InventarioView {
             }
         } while (opcion != 0);
     }
-    
+
     private void registrarProducto() {
         System.out.println("\n=== Registrar nuevo producto ===");
 
@@ -87,8 +87,22 @@ public class InventarioView {
         System.out.print("Unidad de medida (ej: unidad, caja, ml): ");
         String unidad = sc.nextLine();
 
-        System.out.print("Fecha de vencimiento (yyyy-mm-dd): ");
-        String fecha = sc.nextLine();
+        String fechaVencimientoStr;
+        Date fechaVencimiento;
+        do {
+            System.out.print("Fecha de vencimiento (" + FechaUtils.FORMATO_FECHA + "): ");
+            fechaVencimientoStr = sc.nextLine().trim();
+            if (FechaUtils.esFechaValida(fechaVencimientoStr, FechaUtils.FORMATO_FECHA)) {
+                if (FechaUtils.esFechaFutura(fechaVencimientoStr, FechaUtils.FORMATO_FECHA)) {
+                    fechaVencimiento = Date.valueOf(fechaVencimientoStr);
+                    break;
+                } else {
+                    System.out.println("ERROR: La fecha de vencimiento debe ser futura.");
+                }
+            } else {
+                System.out.println("ERROR: Formato de fecha inválido. Use el formato yyyy-MM-dd.");
+            }
+        } while (true);
 
         System.out.print("Precio de compra: ");
         double compra = sc.nextDouble();
@@ -114,7 +128,7 @@ public class InventarioView {
         inv.setCantidadStock(stock);
         inv.setStockMinimo(minimo);
         inv.setUnidadMedida(unidad);
-        inv.setFechaVencimiento(Date.valueOf(fecha));
+        inv.setFechaVencimiento(fechaVencimiento);
         inv.setPrecioCompra(compra);
         inv.setPrecioVenta(venta);
         inv.setRequiereReceta(receta);

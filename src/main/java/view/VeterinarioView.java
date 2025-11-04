@@ -2,6 +2,7 @@ package view;
 
 import controller.VeterinarioController;
 import model.entities.Veterinario;
+import model.utils.FechaUtils;
 
 import java.sql.Date;
 import java.util.List;
@@ -34,7 +35,7 @@ public class VeterinarioView {
                 sc.next();
             }
             opcion = sc.nextInt();
-            sc.nextLine(); // limpiar salto de línea
+            sc.nextLine();
 
             switch (opcion) {
                 case 1 -> registrarVeterinario();
@@ -71,13 +72,12 @@ public class VeterinarioView {
 
         System.out.print("Fecha de contratación (YYYY-MM-DD): ");
         String fechaStr = sc.nextLine();
-        Date fechaContratacion;
-        try {
-            fechaContratacion = Date.valueOf(fechaStr);
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ Formato de fecha inválido. Use YYYY-MM-DD.");
+        if (!FechaUtils.esFechaValida(fechaStr, FechaUtils.FORMATO_FECHA)) {
+            System.out.println("Formato de fecha inválido. Use YYYY-MM-DD.");
             return;
         }
+
+        Date fechaContratacion = Date.valueOf(fechaStr);
 
         System.out.print("¿Está activo? (true/false): ");
         while (!sc.hasNextBoolean()) {
@@ -85,7 +85,7 @@ public class VeterinarioView {
             sc.next();
         }
         boolean activo = sc.nextBoolean();
-        sc.nextLine(); // limpiar salto de línea
+        sc.nextLine();
 
         Veterinario v = new Veterinario(
                 nombre, documento, licencia, especialidad, telefono, email, fechaContratacion, activo
@@ -171,10 +171,9 @@ public class VeterinarioView {
         System.out.print("Nueva fecha de contratación (YYYY-MM-DD) (actual: " + vExistente.getFechaContratacion() + "): ");
         String fechaStr = sc.nextLine();
         if (!fechaStr.trim().isEmpty()) {
-            try {
-                Date fecha = Date.valueOf(fechaStr);
-                vExistente.setFechaContratacion(fecha);
-            } catch (IllegalArgumentException e) {
+            if (FechaUtils.esFechaValida(fechaStr, FechaUtils.FORMATO_FECHA)) {
+                vExistente.setFechaContratacion(Date.valueOf(fechaStr));
+            } else {
                 System.out.println("Formato de fecha inválido, se mantiene la actual.");
             }
         }

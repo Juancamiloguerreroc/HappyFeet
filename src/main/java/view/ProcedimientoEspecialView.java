@@ -74,6 +74,7 @@ public class ProcedimientoEspecialView {
         System.out.print("Nombre del procedimiento: ");
         String nombre = sc.nextLine();
 
+        // Fecha y hora actuales del registro
         Timestamp fechaHora = new Timestamp(System.currentTimeMillis());
 
         System.out.print("Duración estimada (minutos): ");
@@ -183,12 +184,16 @@ public class ProcedimientoEspecialView {
                 }
             }
             if (!existe) {
-                System.out.println("El estado ingresado no es válido. Los valores válidos son:");
+                System.out.println("El estado ingresado no es válido. Valores posibles:");
                 for (EstadoProcedimiento ep : EstadoProcedimiento.values()) {
                     System.out.println(" - " + ep.name());
                 }
             }
         }
+
+        // Fecha de modificación actual
+        Timestamp fechaActualizacion = new Timestamp(System.currentTimeMillis());
+        p.setFechaHora(fechaActualizacion);
 
         String resultado = controller.actualizarProcedimiento(p);
         System.out.println(resultado);
