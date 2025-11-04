@@ -1,0 +1,45 @@
+# ================================
+# Compilación y dependencias
+# ================================
+
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ================================
+# Archivos del entorno de desarrollo (IDE)
+# ================================
+
+.idea/
+*.iml
+.vscode/
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+.project
+.classpath
+.settings/
+
+# ================================
+# Archivos temporales y de log
+# ================================
+
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# ================================
+# Configuración sensible
+# ================================
+
+.env
+config.properties
+application.properties
+application-local.properties
