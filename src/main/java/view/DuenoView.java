@@ -5,6 +5,7 @@ import model.entities.Dueno;
 import model.utils.FechaUtils;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Scanner;
 
@@ -71,17 +72,17 @@ public class DuenoView {
         String contactoEmergencia = sc.nextLine();
 
         String fechaRegistroStr;
-        Date fechaRegistro;
+        Timestamp fechaRegistro;
         do {
-            System.out.print("Ingrese fecha de registro (" + FechaUtils.FORMATO_FECHA + "): ");
+            System.out.print("Ingrese fecha de registro (" + FechaUtils.FORMATO_FECHA_HORA + "): ");
             fechaRegistroStr = sc.nextLine().trim();
 
-            if (FechaUtils.esFechaValida(fechaRegistroStr, FechaUtils.FORMATO_FECHA)) {
-                if (FechaUtils.esFechaFutura(fechaRegistroStr, FechaUtils.FORMATO_FECHA)) {
+            if (FechaUtils.esFechaValida(fechaRegistroStr, FechaUtils.FORMATO_FECHA_HORA)) {
+                if (FechaUtils.esFechaFutura(fechaRegistroStr, FechaUtils.FORMATO_FECHA_HORA)) {
                     System.out.println("ERROR: La fecha de registro no puede ser futura. Intente de nuevo.");
                     continue;
                 }
-                fechaRegistro = Date.valueOf(fechaRegistroStr);
+                fechaRegistro = Timestamp.valueOf(fechaRegistroStr);
                 break;
             } else {
                 System.out.println("ERROR: Formato de fecha inválido. Use el formato yyyy-MM-dd.");
@@ -96,9 +97,9 @@ public class DuenoView {
         boolean activo = sc.nextBoolean();
         sc.nextLine();
 
-        /*Dueno dueno = new Dueno(nombre, documento, direccion, telefono, email, contactoEmergencia, fechaRegistro, activo);
+        Dueno dueno = new Dueno(nombre, documento, direccion, telefono, email, contactoEmergencia, fechaRegistro, activo);
         String resultado = duenoController.registrarDueno(dueno);
-        System.out.println(resultado*/
+        System.out.println(resultado);
     }
 
     private void listarDuenos() {
